@@ -89,3 +89,32 @@ def visualize_demographic():
     )
     fig.update_yaxes(tickformat=".0%", range=[0, 1])
     return fig
+
+
+def family_groups() -> pd.DataFrame:
+    """Summarize passenger counts and fares by family size and class."""
+    df = load_titanic()
+    df["family_size"] = df["sibsp"] + df["parch"] + 1
+
+    return (
+        df.groupby(["pclass", "family_size"], as_index=False)
+        .agg(
+            n_passengers=("fare", "size"),
+            avg_fare=("fare", "mean"),
+            min_fare=("fare", "min"),
+            max_fare=("fare", "max"),
+        )
+        .sort_values(["pclass", "family_size"])
+        .reset_index(drop=True)
+    )
+
+
+def last_names() -> pd.Series:
+    """Return passenger counts indexed by surname."""
+    surnames = (
+        load_titanic()["name"]
+        .str.split(",", n=1)
+        .str[0]
+        .str.strip()
+    )
+    return surnames.value_counts()
