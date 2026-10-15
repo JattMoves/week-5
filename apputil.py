@@ -109,6 +109,33 @@ def family_groups() -> pd.DataFrame:
     )
 
 
+def visualize_families():
+    """Plot average fare by family size and passenger class."""
+    result = family_groups()
+
+    fig = px.bar(
+        result,
+        x="family_size",
+        y="avg_fare",
+        color="pclass",
+        barmode="group",
+        custom_data=["n_passengers", "min_fare", "max_fare"],
+        labels={
+            "family_size": "Family size",
+            "avg_fare": "Average fare",
+            "pclass": "Passenger class",
+        },
+        title="How does average fare vary by family size and passenger class?",
+        hover_data={
+            "n_passengers": True,
+            "min_fare": True,
+            "max_fare": True,
+        },
+    )
+    fig.update_layout(xaxis={"type": "category"})
+    return fig
+
+
 def last_names() -> pd.Series:
     """Return passenger counts indexed by surname."""
     surnames = (
